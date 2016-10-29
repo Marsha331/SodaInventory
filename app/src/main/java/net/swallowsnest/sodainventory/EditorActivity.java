@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.swallowsnest.sodainventory.data.SodaContract;
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
 
 import static android.R.attr.name;
@@ -108,20 +109,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             getLoaderManager().initLoader(EXISTING_SODA_LOADER, null, this);
         }
 
-        Button save = (Button) findViewById(R.id.save_soda);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveSoda();
-            }
-        });
 
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_soda_name);
         mQuantityEditText = (EditText) findViewById(R.id.edit_soda_quantity);
         mPriceEditText = (EditText) findViewById(R.id.edit_soda_price);
-        mGotTextView = (TextView) findViewById(R.id.edit_got_value);
-        mSoldTextView = (TextView) findViewById(R.id.edit_sold_value);
+
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
@@ -129,8 +122,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mNameEditText.setOnTouchListener(mTouchListener);
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
-        mGotTextView.setOnTouchListener(mTouchListener);
-        mSoldTextView.setOnTouchListener(mTouchListener);
 
     }
 
@@ -204,6 +195,46 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    public void sellSoda() {
+
+        ContentValues values = new ContentValues();
+
+        int sell = Integer.valueOf(mQuantityEditText.getText().toString());
+
+
+        if (sell == 0) {
+            return;
+        } else {
+            sell = sell - 1;
+        }
+
+        values.put(SodaEntry.COLUMN_QUANTITY, sell);
+
+        getContentResolver().update(mCurrentSodaUri, values, null, null);
+
+        Toast.makeText(this, "successfully sold 1", Toast.LENGTH_SHORT).show();
+    }
+
+    public void getSoda() {
+
+        ContentValues values = new ContentValues();
+
+        int got = Integer.valueOf(mQuantityEditText.getText().toString());
+
+
+        if (got == 0) {
+            return;
+        } else {
+            got = got + 1;
+        }
+
+        values.put(SodaEntry.COLUMN_QUANTITY, got);
+
+        getContentResolver().update(mCurrentSodaUri, values, null, null);
+
+        Toast.makeText(this, "successfully got 1", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
@@ -242,6 +273,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             case R.id.action_delete:
                 // Pop up confirmation dialog for deletion
                 showDeleteConfirmationDialog();
+                return true;
+            case R.id.action_sell:
+                sellSoda();
+                return true;
+            case R.id.action_get:
+                getSoda();
+                ;
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
@@ -306,8 +344,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 SodaEntry.COLUMN_NAME,
                 SodaEntry.COLUMN_QUANTITY,
                 SodaEntry.COLUMN_PRICE,
-                SodaEntry.COLUMN_GET,
-                SodaEntry.COLUMN_SOLD};
+        };
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
@@ -332,22 +369,16 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             int nameColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_NAME);
             int quantityColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_QUANTITY);
             int priceColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_PRICE);
-            int gotColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_GET);
-            int soldColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_SOLD);
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             float price = cursor.getFloat(priceColumnIndex);
-            int gotValue = cursor.getInt(gotColumnIndex);
-            int soldValue = cursor.getInt(soldColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mQuantityEditText.setText(Integer.toString(quantity));
             mPriceEditText.setText(Float.toString(price));
-            mGotTextView.setText(Integer.toString(gotValue));
-            mSoldTextView.setText(Integer.toString(soldValue));
 
         }
     }

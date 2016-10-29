@@ -10,8 +10,10 @@
     <string name="editor_update_soda_successful">Soda Updated!</string>
     <string name="editor_delete_soda_failed">Delete Soda Failed!</string>
     <string name="editor_delete_soda_successful">Soda Deleted!</string>
-    <string name="action_save">Saved!</string>
-    <string name="action_delete">Deleted!</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_get">Get 1</string>
+    <string name="action_sell">Sell 1</string>
     <string name="action_delete_all_entries">Delete all sodas</string>
     <string name="unsaved_changes_dialog_msg">You have unsaved changes. Are you sure?</string>
     <string name="discard">Discard</string>

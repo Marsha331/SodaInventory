@@ -14,13 +14,6 @@
         tools:text="Pepsi"
         android:paddingLeft="5dp"/>
 
-    <Button
-        android:id="@+id/get_one"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_weight="0"
-        android:focusable="false"
-        android:text="+" />
 
     <TextView
         android:id="@+id/soda_quantity"
@@ -30,13 +23,6 @@
         android:padding="10dp"
         tools:text="5" />
 
-    <Button
-        android:id="@+id/sell_one"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_weight="0"
-        android:focusable="false"
-        android:text="-" />
 
     <TextView
         android:id="@+id/soda_price"

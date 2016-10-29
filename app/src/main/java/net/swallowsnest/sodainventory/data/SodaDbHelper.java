@@ -18,22 +18,20 @@ public class SodaDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "sodas.db";
 
     //database version
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 7;
 
     public SodaDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db){
+    public void onCreate(SQLiteDatabase db) {
         //string for the SQL create table statement
         String SQL_CREATE_SODAS_TABLE = "CREATE TABLE " + SodaEntry.TABLE_NAME + "("
                 + SodaEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + SodaEntry.COLUMN_NAME + " TEXT NOT NULL, "
                 + SodaEntry.COLUMN_QUANTITY + " INTEGER, "
-                + SodaEntry.COLUMN_PRICE + " INTEGER NOT NULL DEFAULT 0, "
-                + SodaEntry.COLUMN_SOLD + " INTEGER, "
-                + SodaEntry.COLUMN_GET + " INTEGER);";
+                + SodaEntry.COLUMN_PRICE + " INTEGER NOT NULL DEFAULT 0);";
 
         //execute db
         db.execSQL(SQL_CREATE_SODAS_TABLE);
@@ -41,7 +39,7 @@ public class SodaDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-       db.execSQL("drop table if exists " + SodaEntry.TABLE_NAME);
+        db.execSQL("drop table if exists " + SodaEntry.TABLE_NAME);
         onCreate(db);
     }
 }

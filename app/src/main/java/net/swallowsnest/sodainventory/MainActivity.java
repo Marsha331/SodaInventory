@@ -20,6 +20,8 @@ import android.widget.ListView;
 
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -136,9 +138,7 @@ public class MainActivity extends AppCompatActivity implements
                 SodaEntry._ID,
                 SodaEntry.COLUMN_NAME,
                 SodaEntry.COLUMN_QUANTITY,
-                SodaEntry.COLUMN_PRICE,
-                SodaEntry.COLUMN_SOLD,
-                SodaEntry.COLUMN_GET};
+                SodaEntry.COLUMN_PRICE,};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context

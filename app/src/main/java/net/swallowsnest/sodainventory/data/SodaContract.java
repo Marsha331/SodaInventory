@@ -21,8 +21,6 @@ public class SodaContract {
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_QUANTITY = "quantity";
         public static final String COLUMN_PRICE = "price";
-        public static final String COLUMN_SOLD = "soldValue";
-        public static final String COLUMN_GET = "gotValue";
 
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_SODAS);

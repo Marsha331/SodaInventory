@@ -199,11 +199,11 @@ public class SodaProvider extends ContentProvider {
         }
 
         // If the {@link SodaEntry#COLUMN_SODA_QUANTITY} key is present,
-        // check that the weight value is valid.
+        // check that the quantity value is valid.
         if (values.containsKey(SodaEntry.COLUMN_QUANTITY)) {
-            // Check that the weight is greater than or equal to 0 kg
+            // Check that the quantity is greater than or equal to 0
             Integer quantity = values.getAsInteger(SodaEntry.COLUMN_QUANTITY);
-            if (quantity != null) {
+            if (quantity == null) {
                 throw new IllegalArgumentException("Soda requires valid quantity.");
             }
         }
