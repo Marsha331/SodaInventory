@@ -1,9 +1,11 @@
 package net.swallowsnest.sodainventory;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,10 @@ import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import net.swallowsnest.sodainventory.data.SodaContract;
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
+
+import static android.R.attr.id;
 
 /**
  * {@link SodaCursorAdapter} is an adapter for a list or grid view
@@ -61,9 +66,9 @@ public class SodaCursorAdapter extends CursorAdapter {
         // Find individual views that we want to modify in the list item layout
         final TextView nameTextView = (TextView) view.findViewById(R.id.soda_name);
         final TextView quantityTextView = (TextView) view.findViewById(R.id.soda_quantity);
-        TextView priceTextView = (TextView) view.findViewById(R.id.soda_price);
-        Button gotButton = (Button) view.findViewById(R.id.get_one);
-        Button sellButton = (Button) view.findViewById(R.id.sell_one);
+        final TextView priceTextView = (TextView) view.findViewById(R.id.soda_price);
+        final Button gotButton = (Button) view.findViewById(R.id.get_one);
+        final Button sellButton = (Button) view.findViewById(R.id.sell_one);
 
         // Find the columns of soda attributes that we're interested in
         int nameColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_NAME);
@@ -102,23 +107,25 @@ public class SodaCursorAdapter extends CursorAdapter {
                 values.put(SodaEntry.COLUMN_SOLD, ++soldValue);
 
                 ContentResolver resolver = view.getContext().getContentResolver();
-                resolver.update(null, values, null, null);
+                if (soldValue > 0) {
+                Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, id);
+                resolver.update(currentItemUri, values, null, null);
             }
-        });
+        }});
 
         // Setup button to get one soda
         gotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ContentValues values = new ContentValues();
-                int getValue = Integer.valueOf(quantityTextView.getText().toString());
-                values.put(SodaEntry.COLUMN_GET, ++getValue);
+                int gotValue = Integer.valueOf(quantityTextView.getText().toString());
+                values.put(SodaEntry.COLUMN_GET, ++gotValue);
 
-                ContentResolver resolver = view.getContext().getContentResolver();
-                resolver.update(null, values, null, null);
-
-            }
-        });
-    }
-}
+                    ContentResolver resolver = view.getContext().getContentResolver();
+                    if (gotValue > 0) {
+                        Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, id);
+                        resolver.update(currentItemUri, values, null, null);
+                    }
+        }
+            });}}
 

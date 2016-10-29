@@ -28,9 +28,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     private static final int SODA_LOADER = 0;
 
-    int soldValue = 0;
-    int getValue = 0;
-
     /**
      * Adapter for the ListView
      */
@@ -114,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void deleteAllSodas() {
         int rowsDeleted = getContentResolver().delete(SodaEntry.CONTENT_URI, null, null);
-        Log.v("CatalogActivity", rowsDeleted + " rows deleted from soda database");
+        Log.v("MainActivity", rowsDeleted + " rows deleted from soda database");
     }
 
     @Override
@@ -139,7 +136,9 @@ public class MainActivity extends AppCompatActivity implements
                 SodaEntry._ID,
                 SodaEntry.COLUMN_NAME,
                 SodaEntry.COLUMN_QUANTITY,
-                SodaEntry.COLUMN_PRICE};
+                SodaEntry.COLUMN_PRICE,
+                SodaEntry.COLUMN_SOLD,
+                SodaEntry.COLUMN_GET};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
