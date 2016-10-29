@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">SodaInventory</string>
+    <string name="empty_view_title_text">Looks like you need more soda! </string>
+    <string name="unknown_price">Unknown price. </string>
+    <string name="editor_activity_title_new_soda">New Soda</string>
+    <string name="editor_activity_title_edit_soda">Edit Soda</string>
+    <string name="editor_insert_soda_failed">Insert Soda Failed!</string>
+    <string name="editor_insert_soda_successful">Soda Inserted!</string>
+    <string name="editor_update_soda_failed">Update Soda Failed!</string>
+    <string name="editor_update_soda_successful">Soda Updated!</string>
+    <string name="editor_delete_soda_failed">Delete Soda Failed!</string>
+    <string name="editor_delete_soda_successful">Soda Deleted!</string>
+    <string name="action_save">Saved!</string>
+    <string name="action_delete">Deleted!</string>
+    <string name="action_delete_all_entries">Delete all sodas</string>
+    <string name="unsaved_changes_dialog_msg">You have unsaved changes. Are you sure?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="delete_dialog_msg">Delete this soda?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="soda_order_for">Order More Soda</string>
+    <string name="fewer_than_one">You cannot have fewer than one soda.</string>
+
+
+
+</resources>
