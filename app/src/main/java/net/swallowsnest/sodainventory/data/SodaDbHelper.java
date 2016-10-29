@@ -18,7 +18,7 @@ public class SodaDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "sodas.db";
 
     //database version
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
 
     public SodaDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,7 +32,7 @@ public class SodaDbHelper extends SQLiteOpenHelper {
                 + SodaEntry.COLUMN_NAME + " TEXT NOT NULL, "
                 + SodaEntry.COLUMN_QUANTITY + " INTEGER, "
                 + SodaEntry.COLUMN_PRICE + " INTEGER NOT NULL DEFAULT 0, "
-                + SodaEntry.COLUMN_SOLD + " INTEGER "
+                + SodaEntry.COLUMN_SOLD + " INTEGER, "
                 + SodaEntry.COLUMN_GET + " INTEGER);";
 
         //execute db

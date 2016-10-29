@@ -33,7 +33,7 @@ public class SodaCursorAdapter extends CursorAdapter {
      * @param c       The cursor from which to get the data.
      */
     public SodaCursorAdapter(Context context, Cursor c) {
-        super(context, c, 0 /* flags */);
+        super(context, c, 0);
     }
 
     /**

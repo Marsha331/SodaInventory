@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="left"
-        tools:text="Pepsi" />
+        tools:text="Pepsi"
+        android:paddingLeft="5dp"/>
 
     <Button
         android:id="@+id/get_one"
@@ -43,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
-        tools:text="$1.50" />
+        tools:text="$1.50"
+        android:paddingRight="5dp"/>
 
 </LinearLayout>
