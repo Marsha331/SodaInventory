@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
 
@@ -63,23 +64,24 @@ public class SodaCursorAdapter extends CursorAdapter {
         // Find individual views that we want to modify in the list item layout
         final TextView nameTextView = (TextView) view.findViewById(R.id.soda_name);
         final TextView quantityTextView = (TextView) view.findViewById(R.id.soda_quantity);
-        final TextView priceTextView = (TextView) view.findViewById(R.id.soda_price);
         final TextView soldTextView = (TextView) view.findViewById(R.id.edit_sold_value);
+        final TextView priceTextView = (TextView) view.findViewById(R.id.soda_price);
         final Button sellButton = (Button) view.findViewById(R.id.sell_soda);
 
         // Find the columns of soda attributes that we're interested in
         int idColumnIndex = cursor.getColumnIndex(SodaEntry._ID);
         int nameColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_NAME);
         int quantityColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_QUANTITY);
-        int priceColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_PRICE);
         int soldColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_SOLD);
+        int priceColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_PRICE);
+
 
         // Read the soda attributes from the Cursor for the current soda
         int rowId = cursor.getInt(idColumnIndex);
         final String sodaName = cursor.getString(nameColumnIndex);
         String sodaQuantity = cursor.getString(quantityColumnIndex);
+        int sodaSold = cursor.getInt(soldColumnIndex);
         String sodaPrice = cursor.getString(priceColumnIndex);
-        String sodaSold = cursor.getString(soldColumnIndex);
 
 
         // If the soda price is empty string or null, then use some default text
@@ -92,31 +94,43 @@ public class SodaCursorAdapter extends CursorAdapter {
         nameTextView.setText(sodaName);
         nameTextView.setTag(rowId);
         quantityTextView.setText(sodaQuantity);
-        priceTextView.setText(sodaPrice);
         soldTextView.setText(sodaSold);
+        priceTextView.setText(sodaPrice);
+
 
         sellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ContentValues values = new ContentValues();
 
-                int sell = Integer.parseInt(quantityTextView.getText().toString());
-                int sold = Integer.parseInt(soldTextView.getText().toString());
-                if (sell > 0) {
+                int sodaQuantity = Integer.parseInt(quantityTextView.getText().toString());
+                int sodaSold = Integer.parseInt(soldTextView.getText().toString());
+                if (sodaQuantity > 0) {
 
-                    sell--;
-                    Log.d("sellButton stock: ", String.valueOf(sell));
-                    sold++;
-                    Log.d("sellButton sales: ", String.valueOf(sold));
+                    sodaQuantity--;
+                    Log.d("sellButton stock: ", String.valueOf(sodaQuantity));
+                    sodaSold++;
+                    Log.d("sellButton sales: ", String.valueOf(sodaSold));
                 }
 
-                values.put(SodaEntry.COLUMN_QUANTITY, sell);
+                values.put(SodaEntry.COLUMN_QUANTITY, sodaQuantity);
+                values.put(SodaEntry.COLUMN_SOLD, sodaSold);
                 int rowid = (Integer) quantityTextView.getTag();
 
                 Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowid);
 
                 int rowsAffected = context.getContentResolver().update(currentItemUri, values, null, null);
 
+                // Show a toast message depending on whether or not the update was successful.
+                if (rowsAffected == 0) {
+                    // If no rows were affected, then there was an error with the update.
+                    Toast.makeText(context, "Update Failed",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the update was successful and we can display a toast.
+                    Toast.makeText(context, "Update succeeded",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
