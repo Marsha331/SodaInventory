@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,7 @@ public class SodaCursorAdapter extends CursorAdapter {
         final TextView nameTextView = (TextView) view.findViewById(R.id.soda_name);
         final TextView quantityTextView = (TextView) view.findViewById(R.id.soda_quantity);
         final TextView priceTextView = (TextView) view.findViewById(R.id.soda_price);
+        final TextView soldTextView = (TextView) view.findViewById(R.id.edit_sold_value);
         final Button sellButton = (Button) view.findViewById(R.id.sell_soda);
 
         // Find the columns of soda attributes that we're interested in
@@ -70,12 +72,14 @@ public class SodaCursorAdapter extends CursorAdapter {
         int nameColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_NAME);
         int quantityColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_QUANTITY);
         int priceColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_PRICE);
+        int soldColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_SOLD);
 
         // Read the soda attributes from the Cursor for the current soda
         int rowId = cursor.getInt(idColumnIndex);
         final String sodaName = cursor.getString(nameColumnIndex);
         String sodaQuantity = cursor.getString(quantityColumnIndex);
         String sodaPrice = cursor.getString(priceColumnIndex);
+        String sodaSold = cursor.getString(soldColumnIndex);
 
 
         // If the soda price is empty string or null, then use some default text
@@ -89,20 +93,27 @@ public class SodaCursorAdapter extends CursorAdapter {
         nameTextView.setTag(rowId);
         quantityTextView.setText(sodaQuantity);
         priceTextView.setText(sodaPrice);
+        soldTextView.setText(sodaSold);
 
         sellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ContentValues values = new ContentValues();
 
-                int sell = Integer.valueOf(quantityTextView.getText().toString());
+                int sell = Integer.parseInt(quantityTextView.getText().toString());
+                int sold = Integer.parseInt(soldTextView.getText().toString());
+                if (sell > 0) {
 
-                sell = sell - 1;
+                    sell--;
+                    Log.d("sellButton stock: ", String.valueOf(sell));
+                    sold++;
+                    Log.d("sellButton sales: ", String.valueOf(sold));
+                }
 
                 values.put(SodaEntry.COLUMN_QUANTITY, sell);
-                int rowId = (Integer) quantityTextView.getTag();
+                int rowid = (Integer) quantityTextView.getTag();
 
-                Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowId);
+                Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowid);
 
                 int rowsAffected = context.getContentResolver().update(currentItemUri, values, null, null);
 

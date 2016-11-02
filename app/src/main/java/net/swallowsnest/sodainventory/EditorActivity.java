@@ -132,9 +132,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String priceString = mPriceEditText.getText().toString().trim();
 
         // Check if this is supposed to be a new soda
-        // and check if all the fields in the editor are blank
-        if (mCurrentSodaUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(quantityString) &&
+        // and check if any of the fields in the editor are blank
+        if (mCurrentSodaUri == null ||
+                TextUtils.isEmpty(nameString) || TextUtils.isEmpty(quantityString) ||
                 TextUtils.isEmpty(priceString)) {
             // Since no fields were modified, we can return early without creating a new soda.
             // No need to create ContentValues and no need to do any ContentProvider operations.
@@ -147,7 +147,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(SodaEntry.COLUMN_NAME, nameString);
         values.put(SodaEntry.COLUMN_QUANTITY, quantityString);
         values.put(SodaEntry.COLUMN_PRICE, priceString);
-        // If the weight is not provided by the user, don't try to parse the string into an
+        // If the price is not provided by the user, don't try to parse the string into an
         // integer value. Use 0 by default.
         int price = 0;
         if (!TextUtils.isEmpty(priceString)) {
@@ -189,36 +189,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                         Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    public void sellSoda() {
-
-        ContentValues values = new ContentValues();
-
-        int sell = Integer.valueOf(mQuantityEditText.getText().toString());
-
-        sell = sell - 1;
-
-        values.put(SodaEntry.COLUMN_QUANTITY, sell);
-
-        getContentResolver().update(mCurrentSodaUri, values, null, null);
-
-        Toast.makeText(this, "successfully sold 1", Toast.LENGTH_SHORT).show();
-    }
-
-    public void getSoda() {
-
-        ContentValues values = new ContentValues();
-
-        int got = Integer.valueOf(mQuantityEditText.getText().toString());
-
-        got = got + 1;
-
-        values.put(SodaEntry.COLUMN_QUANTITY, got);
-
-        getContentResolver().update(mCurrentSodaUri, values, null, null);
-
-        Toast.makeText(this, "successfully got 1", Toast.LENGTH_SHORT).show();
     }
 
     @Override

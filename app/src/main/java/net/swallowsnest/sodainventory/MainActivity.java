@@ -117,7 +117,8 @@ public class MainActivity extends AppCompatActivity implements
                 SodaEntry._ID,
                 SodaEntry.COLUMN_NAME,
                 SodaEntry.COLUMN_QUANTITY,
-                SodaEntry.COLUMN_PRICE,};
+                SodaEntry.COLUMN_PRICE,
+                SodaEntry.COLUMN_SOLD};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
