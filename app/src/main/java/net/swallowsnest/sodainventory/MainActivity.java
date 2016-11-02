@@ -2,7 +2,6 @@ package net.swallowsnest.sodainventory;
 
 import android.app.LoaderManager;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -19,8 +18,6 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -89,31 +86,13 @@ public class MainActivity extends AppCompatActivity implements
         getLoaderManager().initLoader(SODA_LOADER, null, this);
     }
 
-
-    /**
-     * Helper method to insert hardcoded soda data into the database. For debugging purposes only.
-     */
-    private void insertSoda() {
-        // Create a ContentValues object where column names are the keys,
-        // and soda attributes are the values.
-        ContentValues values = new ContentValues();
-        values.put(SodaEntry.COLUMN_NAME, "Pepsi");
-        values.put(SodaEntry.COLUMN_QUANTITY, 24);
-        values.put(SodaEntry.COLUMN_PRICE, 1.5);
-
-        // Insert a new row for Toto into the provider using the ContentResolver.
-        // Use the {@link SodaEntry#CONTENT_URI} to indicate that we want to insert
-        // into the sodas database table.
-        // Receive the new content URI that will allow us to access Toto's data in the future.
-        Uri newUri = getContentResolver().insert(SodaEntry.CONTENT_URI, values);
-    }
-
     /**
      * Helper method to delete all sodas in the database.
      */
     private void deleteAllSodas() {
         int rowsDeleted = getContentResolver().delete(SodaEntry.CONTENT_URI, null, null);
         Log.v("MainActivity", rowsDeleted + " rows deleted from soda database");
+        mCursorAdapter.swapCursor(null);
     }
 
     @Override

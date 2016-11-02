@@ -8,8 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,17 +19,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import net.swallowsnest.sodainventory.data.SodaContract;
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
-
-import static android.R.attr.name;
-import static net.swallowsnest.sodainventory.R.id.plus;
 
 /**
  * Created by marshas on 10/28/16.
@@ -60,14 +56,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      */
     private EditText mPriceEditText;
 
-    private TextView mGotTextView;
-
-    private TextView mSoldTextView;
+    private ImageView mImageView;
 
     /**
      * Boolean flag that keeps track of whether the soda has been edited (true) or not (false)
      */
     private boolean mSodaHasChanged = false;
+
 
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
@@ -114,6 +109,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mNameEditText = (EditText) findViewById(R.id.edit_soda_name);
         mQuantityEditText = (EditText) findViewById(R.id.edit_soda_quantity);
         mPriceEditText = (EditText) findViewById(R.id.edit_soda_price);
+        mImageView = (ImageView) findViewById(R.id.pic_here);
 
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
@@ -201,12 +197,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         int sell = Integer.valueOf(mQuantityEditText.getText().toString());
 
-
-        if (sell == 0) {
-            return;
-        } else {
-            sell = sell - 1;
-        }
+        sell = sell - 1;
 
         values.put(SodaEntry.COLUMN_QUANTITY, sell);
 
@@ -221,12 +212,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         int got = Integer.valueOf(mQuantityEditText.getText().toString());
 
-
-        if (got == 0) {
-            return;
-        } else {
-            got = got + 1;
-        }
+        got = got + 1;
 
         values.put(SodaEntry.COLUMN_QUANTITY, got);
 
@@ -273,13 +259,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             case R.id.action_delete:
                 // Pop up confirmation dialog for deletion
                 showDeleteConfirmationDialog();
-                return true;
-            case R.id.action_sell:
-                sellSoda();
-                return true;
-            case R.id.action_get:
-                getSoda();
-                ;
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
@@ -333,6 +312,25 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         // Show dialog that there are unsaved changes
         showUnsavedChangesDialog(discardButtonClickListener);
+    }
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    public void dispatchTakePictureIntent(View view) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mImageView.setImageBitmap(imageBitmap);
+        }
     }
 
     @Override

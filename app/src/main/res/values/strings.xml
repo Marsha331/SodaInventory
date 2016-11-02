@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SodaInventory</string>
     <string name="empty_view_title_text">Looks like you need more soda! </string>
+    <string name="empty_view_subtitle">Click the Add Soda button to start.</string>
     <string name="unknown_price">Unknown price. </string>
     <string name="editor_activity_title_new_soda">New Soda</string>
     <string name="editor_activity_title_edit_soda">Edit Soda</string>
@@ -23,7 +24,6 @@
     <string name="cancel">Cancel</string>
     <string name="soda_order_for">Order More Soda</string>
     <string name="fewer_than_one">You cannot have fewer than one soda.</string>
-
-
+    <string name="take_photo">Click to take a picture of your product. </string>
 
 </resources>

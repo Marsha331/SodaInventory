@@ -26,13 +26,4 @@
         android:title="@string/action_delete"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_sell"
-        android:title="@string/action_sell"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_get"
-        android:title="@string/action_get"
-        app:showAsAction="never" />
 </menu>

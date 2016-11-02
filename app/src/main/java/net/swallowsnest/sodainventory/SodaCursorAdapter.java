@@ -1,6 +1,5 @@
 package net.swallowsnest.sodainventory;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,10 +13,7 @@ import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import net.swallowsnest.sodainventory.data.SodaContract;
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
-
-import static android.R.attr.id;
 
 /**
  * {@link SodaCursorAdapter} is an adapter for a list or grid view
@@ -62,20 +58,22 @@ public class SodaCursorAdapter extends CursorAdapter {
      *                correct row.
      */
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
         // Find individual views that we want to modify in the list item layout
         final TextView nameTextView = (TextView) view.findViewById(R.id.soda_name);
         final TextView quantityTextView = (TextView) view.findViewById(R.id.soda_quantity);
         final TextView priceTextView = (TextView) view.findViewById(R.id.soda_price);
+        final Button sellButton = (Button) view.findViewById(R.id.sell_soda);
 
         // Find the columns of soda attributes that we're interested in
+        int idColumnIndex = cursor.getColumnIndex(SodaEntry._ID);
         int nameColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_NAME);
         int quantityColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_QUANTITY);
         int priceColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_PRICE);
 
-
         // Read the soda attributes from the Cursor for the current soda
-        String sodaName = cursor.getString(nameColumnIndex);
+        int rowId = cursor.getInt(idColumnIndex);
+        final String sodaName = cursor.getString(nameColumnIndex);
         String sodaQuantity = cursor.getString(quantityColumnIndex);
         String sodaPrice = cursor.getString(priceColumnIndex);
 
@@ -88,8 +86,28 @@ public class SodaCursorAdapter extends CursorAdapter {
 
         // Update the TextViews with the attributes for the current soda
         nameTextView.setText(sodaName);
+        nameTextView.setTag(rowId);
         quantityTextView.setText(sodaQuantity);
         priceTextView.setText(sodaPrice);
+
+        sellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues values = new ContentValues();
+
+                int sell = Integer.valueOf(quantityTextView.getText().toString());
+
+                sell = sell - 1;
+
+                values.put(SodaEntry.COLUMN_QUANTITY, sell);
+                int rowId = (Integer) quantityTextView.getTag();
+
+                Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowId);
+
+                int rowsAffected = context.getContentResolver().update(currentItemUri, values, null, null);
+
+            }
+        });
 
     }
 }
