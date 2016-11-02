@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements
     private void deleteAllSodas() {
         int rowsDeleted = getContentResolver().delete(SodaEntry.CONTENT_URI, null, null);
         Log.v("MainActivity", rowsDeleted + " rows deleted from soda database");
-        mCursorAdapter.swapCursor(null);
     }
 
     @Override

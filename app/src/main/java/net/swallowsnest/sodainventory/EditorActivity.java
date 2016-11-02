@@ -2,6 +2,7 @@ package net.swallowsnest.sodainventory;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -15,12 +16,15 @@ import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
@@ -58,11 +62,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private ImageView mImageView;
 
+    private TextView mSoldTextView;
+
+
     /**
      * Boolean flag that keeps track of whether the soda has been edited (true) or not (false)
      */
     private boolean mSodaHasChanged = false;
-
 
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
@@ -110,6 +116,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mQuantityEditText = (EditText) findViewById(R.id.edit_soda_quantity);
         mPriceEditText = (EditText) findViewById(R.id.edit_soda_price);
         mImageView = (ImageView) findViewById(R.id.pic_here);
+        mSoldTextView = (TextView) findViewById(R.id.edit_sold_value);
+
 
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
@@ -133,8 +141,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         // Check if this is supposed to be a new soda
         // and check if any of the fields in the editor are blank
-        if (mCurrentSodaUri == null ||
-                TextUtils.isEmpty(nameString) || TextUtils.isEmpty(quantityString) ||
+        if (mCurrentSodaUri == null &&
+                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(quantityString) &&
                 TextUtils.isEmpty(priceString)) {
             // Since no fields were modified, we can return early without creating a new soda.
             // No need to create ContentValues and no need to do any ContentProvider operations.
@@ -303,6 +311,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // Since the editor shows all soda attributes, define a projection that contains
@@ -442,6 +451,38 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         // Close the activity
         finish();
+    }
+    public void sellSoda(View view){
+        ContentValues values = new ContentValues();
+
+        int sodaQuantity = Integer.parseInt(mQuantityEditText.getText().toString());
+        int sodaSold = Integer.parseInt(mSoldTextView.getText().toString());
+        if (sodaQuantity > 0) {
+
+            sodaQuantity--;
+            Log.d("sellButton stock: ", String.valueOf(sodaQuantity));
+            sodaSold++;
+            Log.d("sellButton sales: ", String.valueOf(sodaSold));
+        }
+
+        values.put(SodaEntry.COLUMN_QUANTITY, sodaQuantity);
+        values.put(SodaEntry.COLUMN_SOLD, sodaSold);
+        int rowid = (Integer) mQuantityEditText.getTag();
+
+        Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowid);
+
+        int rowsAffected = getContentResolver().update(currentItemUri, values, null, null);
+
+        // Show a toast message depending on whether or not the update was successful.
+        if (rowsAffected == 0) {
+            // If no rows were affected, then there was an error with the update.
+            Toast.makeText(this, "Update Failed",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            // Otherwise, the update was successful and we can display a toast.
+            Toast.makeText(this, "Update succeeded",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
