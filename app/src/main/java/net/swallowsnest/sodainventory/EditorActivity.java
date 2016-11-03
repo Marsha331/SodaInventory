@@ -16,7 +16,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -64,7 +63,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private TextView mSoldTextView;
 
-
     /**
      * Boolean flag that keeps track of whether the soda has been edited (true) or not (false)
      */
@@ -110,13 +108,28 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             getLoaderManager().initLoader(EXISTING_SODA_LOADER, null, this);
         }
 
+        Button sellButton = (Button) findViewById(R.id.sell_soda);
+        sellButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                int sodaQuantity = Integer.parseInt(mQuantityEditText.getText().toString());
+                if (sodaQuantity > 0) {
+                    sodaQuantity--;
+
+                }
+                ContentValues values = new ContentValues();
+                values.put(SodaEntry.COLUMN_QUANTITY, sodaQuantity);
+                int rowid = (Integer) mQuantityEditText.getTag();
+                Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowid);
+                int rowsAffected = getContentResolver().update(currentItemUri, values, null, null);
+            }
+        });
 
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_soda_name);
         mQuantityEditText = (EditText) findViewById(R.id.edit_soda_quantity);
         mPriceEditText = (EditText) findViewById(R.id.edit_soda_price);
         mImageView = (ImageView) findViewById(R.id.pic_here);
-        mSoldTextView = (TextView) findViewById(R.id.edit_sold_value);
 
 
 
@@ -292,6 +305,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         showUnsavedChangesDialog(discardButtonClickListener);
     }
 
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public void dispatchTakePictureIntent(View view) {
@@ -321,6 +335,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 SodaEntry.COLUMN_NAME,
                 SodaEntry.COLUMN_QUANTITY,
                 SodaEntry.COLUMN_PRICE,
+                SodaEntry.COLUMN_SOLD
         };
 
         // This loader will execute the ContentProvider's query method on a background thread
@@ -452,38 +467,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Close the activity
         finish();
     }
-    public void sellSoda(View view){
-        ContentValues values = new ContentValues();
 
-        int sodaQuantity = Integer.parseInt(mQuantityEditText.getText().toString());
-        int sodaSold = Integer.parseInt(mSoldTextView.getText().toString());
-        if (sodaQuantity > 0) {
-
-            sodaQuantity--;
-            Log.d("sellButton stock: ", String.valueOf(sodaQuantity));
-            sodaSold++;
-            Log.d("sellButton sales: ", String.valueOf(sodaSold));
-        }
-
-        values.put(SodaEntry.COLUMN_QUANTITY, sodaQuantity);
-        values.put(SodaEntry.COLUMN_SOLD, sodaSold);
-        int rowid = (Integer) mQuantityEditText.getTag();
-
-        Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowid);
-
-        int rowsAffected = getContentResolver().update(currentItemUri, values, null, null);
-
-        // Show a toast message depending on whether or not the update was successful.
-        if (rowsAffected == 0) {
-            // If no rows were affected, then there was an error with the update.
-            Toast.makeText(this, "Update Failed",
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            // Otherwise, the update was successful and we can display a toast.
-            Toast.makeText(this, "Update succeeded",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
 
     /**
      * This method is called when the order button is clicked.

@@ -68,5 +68,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:text="Add Soda"
+      android:padding="10dp"
        />
 </RelativeLayout>
