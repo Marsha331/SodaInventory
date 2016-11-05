@@ -165,7 +165,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Check if this is supposed to be a new soda
         // and check if any of the fields in the editor are blank
         if (mCurrentSodaUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(quantityString) &&
+                TextUtils.isEmpty(nameString) || TextUtils.isEmpty(quantityString) ||
                 TextUtils.isEmpty(priceString)) {
             // Since no fields were modified, we can return early without creating a new soda.
             // No need to create ContentValues and no need to do any ContentProvider operations.
@@ -487,12 +487,30 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
+        TextView nameField = (TextView) findViewById(R.id.edit_soda_name);
+        String name = nameField.getText().toString();
+        TextView priceField = (TextView) findViewById(R.id.edit_soda_price);
+        String price = priceField.getText().toString();
+        TextView soldField = (TextView) findViewById(R.id.edit_sold_value);
+        String sold = soldField.getText().toString();
+        String sodaMessage = createSodaSummary(name, price, sold);
+
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.soda_order_for));
+        intent.putExtra(Intent.EXTRA_TEXT, sodaMessage);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    private String createSodaSummary(String name, String price, String sold) {
+        String sodaMessage = "\nName: " + name;
+        sodaMessage += "\nPrice per soda: " + price;
+        sodaMessage += "\nNumber sold: " + sold;
+        sodaMessage += "\nThank you!";
+        return sodaMessage;
+
     }
 
 }

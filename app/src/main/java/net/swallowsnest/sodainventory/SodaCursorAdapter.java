@@ -1,11 +1,15 @@
 package net.swallowsnest.sodainventory;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
@@ -59,6 +63,7 @@ public class SodaCursorAdapter extends CursorAdapter {
         final TextView nameTextView = (TextView) view.findViewById(R.id.soda_name);
         final TextView quantityTextView = (TextView) view.findViewById(R.id.soda_quantity);
         final TextView priceTextView = (TextView) view.findViewById(R.id.soda_price);
+        Button sellButton = (Button) view.findViewById(R.id.list_sell_soda);
 
         // Find the columns of soda attributes that we're interested in
         int idColumnIndex = cursor.getColumnIndex(SodaEntry._ID);
@@ -69,7 +74,7 @@ public class SodaCursorAdapter extends CursorAdapter {
         // Read the soda attributes from the Cursor for the current soda
         int rowId = cursor.getInt(idColumnIndex);
         final String sodaName = cursor.getString(nameColumnIndex);
-        String sodaQuantity = cursor.getString(quantityColumnIndex);
+        final String sodaQuantity = cursor.getString(quantityColumnIndex);
         String sodaPrice = cursor.getString(priceColumnIndex);
 
         // If the soda price is empty string or null, then use some default text
@@ -84,6 +89,28 @@ public class SodaCursorAdapter extends CursorAdapter {
         quantityTextView.setText(sodaQuantity);
         priceTextView.setText(sodaPrice);
 
+        sellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues values = new ContentValues();
+                int sellOne = Integer.valueOf(quantityTextView.getText().toString());
+
+                if (sellOne == 0) {
+                    return;
+                }
+                sellOne = --sellOne;
+
+                values.put(SodaEntry.COLUMN_QUANTITY, sellOne);
+                int rowid = (Integer) nameTextView.getTag();
+
+                Uri currentSodaUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowid);
+                int rowAffected = context.getContentResolver().update(currentSodaUri, values, null, null);
+            }
+
+        });
+
     }
+
 }
+
 
