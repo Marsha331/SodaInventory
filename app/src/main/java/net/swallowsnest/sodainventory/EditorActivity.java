@@ -2,7 +2,6 @@ package net.swallowsnest.sodainventory;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -27,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * Created by marshas on 10/28/16.
@@ -111,19 +112,22 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         Button sellButton = (Button) findViewById(R.id.sell_soda);
         sellButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                int sodaQuantity = Integer.parseInt(mQuantityEditText.getText().toString());
+                int sodaQuantity;
+                int soldQuantity = 0;
+                mSoldTextView = (TextView) findViewById(R.id.edit_sold_value);
+                sodaQuantity = Integer.valueOf(mQuantityEditText.getText().toString());
+                soldQuantity = Integer.valueOf(mSoldTextView.getText().toString());
                 if (sodaQuantity > 0) {
                     sodaQuantity--;
-
+                    soldQuantity++;
                 }
+
                 ContentValues values = new ContentValues();
                 values.put(SodaEntry.COLUMN_QUANTITY, sodaQuantity);
-                int rowid = (Integer) mQuantityEditText.getTag();
-                Uri currentItemUri = ContentUris.withAppendedId(SodaEntry.CONTENT_URI, rowid);
-                int rowsAffected = getContentResolver().update(currentItemUri, values, null, null);
+                values.put(SodaEntry.COLUMN_SOLD, soldQuantity);
             }
         });
+
 
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_soda_name);
@@ -172,7 +176,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // integer value. Use 0 by default.
         int price = 0;
         if (!TextUtils.isEmpty(priceString)) {
-            price = Integer.parseInt(priceString);
+            price = parseInt(priceString);
         }
         values.put(SodaEntry.COLUMN_PRICE, price);
 
@@ -365,12 +369,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
-            float price = cursor.getFloat(priceColumnIndex);
+            int price = cursor.getInt(priceColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mQuantityEditText.setText(Integer.toString(quantity));
-            mPriceEditText.setText(Float.toString(price));
+            mPriceEditText.setText(Integer.toString(price));
 
         }
     }
