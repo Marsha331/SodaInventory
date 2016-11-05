@@ -27,8 +27,6 @@ import android.widget.Toast;
 
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
 
-import static java.lang.Integer.parseInt;
-
 /**
  * Created by marshas on 10/28/16.
  */
@@ -181,9 +179,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(SodaEntry.COLUMN_SOLD, soldString);
         // If the price is not provided by the user, don't try to parse the string into an
         // integer value. Use 0 by default.
-        int price = 0;
+        float price = 0;
         if (!TextUtils.isEmpty(priceString)) {
-            price = parseInt(priceString);
+            price = Float.parseFloat(priceString);
         }
         values.put(SodaEntry.COLUMN_PRICE, price);
 
@@ -377,13 +375,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
-            int price = cursor.getInt(priceColumnIndex);
+            float price = cursor.getInt(priceColumnIndex);
             int sold = cursor.getInt(soldColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mQuantityEditText.setText(Integer.toString(quantity));
-            mPriceEditText.setText(Integer.toString(price));
+            mPriceEditText.setText(Float.toString(price));
             mSoldTextView.setText(Integer.toString(sold));
 
         }
