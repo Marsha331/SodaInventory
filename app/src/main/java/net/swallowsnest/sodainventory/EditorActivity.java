@@ -112,8 +112,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         Button sellButton = (Button) findViewById(R.id.sell_soda);
         sellButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (mCurrentSodaUri == null) {
+                    return;
+                }
                 int sodaQuantity;
-                int soldQuantity = 0;
+                int soldQuantity;
                 mSoldTextView = (TextView) findViewById(R.id.edit_sold_value);
                 sodaQuantity = Integer.valueOf(mQuantityEditText.getText().toString());
                 soldQuantity = Integer.valueOf(mSoldTextView.getText().toString());
@@ -125,6 +128,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 ContentValues values = new ContentValues();
                 values.put(SodaEntry.COLUMN_QUANTITY, sodaQuantity);
                 values.put(SodaEntry.COLUMN_SOLD, soldQuantity);
+                getContentResolver().update(mCurrentSodaUri, values, null, null);
             }
         });
 
@@ -133,6 +137,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mNameEditText = (EditText) findViewById(R.id.edit_soda_name);
         mQuantityEditText = (EditText) findViewById(R.id.edit_soda_quantity);
         mPriceEditText = (EditText) findViewById(R.id.edit_soda_price);
+        mSoldTextView = (TextView) findViewById(R.id.edit_sold_value);
         mImageView = (ImageView) findViewById(R.id.pic_here);
 
 
@@ -155,6 +160,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String nameString = mNameEditText.getText().toString().trim();
         String quantityString = mQuantityEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
+        String soldString = mSoldTextView.getText().toString().trim();
 
         // Check if this is supposed to be a new soda
         // and check if any of the fields in the editor are blank
@@ -172,6 +178,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(SodaEntry.COLUMN_NAME, nameString);
         values.put(SodaEntry.COLUMN_QUANTITY, quantityString);
         values.put(SodaEntry.COLUMN_PRICE, priceString);
+        values.put(SodaEntry.COLUMN_SOLD, soldString);
         // If the price is not provided by the user, don't try to parse the string into an
         // integer value. Use 0 by default.
         int price = 0;
@@ -365,16 +372,19 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             int nameColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_NAME);
             int quantityColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_QUANTITY);
             int priceColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_PRICE);
+            int soldColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_SOLD);
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             int price = cursor.getInt(priceColumnIndex);
+            int sold = cursor.getInt(soldColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mQuantityEditText.setText(Integer.toString(quantity));
             mPriceEditText.setText(Integer.toString(price));
+            mSoldTextView.setText(Integer.toString(sold));
 
         }
     }
@@ -385,6 +395,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mNameEditText.setText("");
         mQuantityEditText.setText("");
         mPriceEditText.setText("");
+        mSoldTextView.setText("");
     }
 
     /**
@@ -471,7 +482,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Close the activity
         finish();
     }
-
 
     /**
      * This method is called when the order button is clicked.

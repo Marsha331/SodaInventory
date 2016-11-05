@@ -1,19 +1,13 @@
 package net.swallowsnest.sodainventory;
 
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.swallowsnest.sodainventory.data.SodaContract.SodaEntry;
 
@@ -66,20 +60,17 @@ public class SodaCursorAdapter extends CursorAdapter {
         final TextView quantityTextView = (TextView) view.findViewById(R.id.soda_quantity);
         final TextView priceTextView = (TextView) view.findViewById(R.id.soda_price);
 
-
         // Find the columns of soda attributes that we're interested in
         int idColumnIndex = cursor.getColumnIndex(SodaEntry._ID);
         int nameColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_NAME);
         int quantityColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_QUANTITY);
         int priceColumnIndex = cursor.getColumnIndex(SodaEntry.COLUMN_PRICE);
 
-
         // Read the soda attributes from the Cursor for the current soda
         int rowId = cursor.getInt(idColumnIndex);
         final String sodaName = cursor.getString(nameColumnIndex);
         String sodaQuantity = cursor.getString(quantityColumnIndex);
         String sodaPrice = cursor.getString(priceColumnIndex);
-
 
         // If the soda price is empty string or null, then use some default text
         // that says "Unknown price", so the TextView isn't blank.
